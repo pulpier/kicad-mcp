@@ -11,6 +11,7 @@ dependencies = [
     "pynng>=0.8.0",
     "protobuf>=4.0",
     "mcp>=1.0",
+    "kiutils>=1.4.0",
 ]
 
 [project.optional-dependencies]
