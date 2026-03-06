@@ -3,7 +3,7 @@
 import json
 from mcp.server.fastmcp import FastMCP
 
-from kicad_mcp.tools import schematic as sch_file, pcb as pcb_file, editor, symbol_edit
+from kicad_mcp.tools import schematic as sch_file, pcb as pcb_file, editor, symbol_edit, wire_edit
 
 mcp = FastMCP("kicad-file")
 
@@ -253,6 +253,124 @@ def set_symbol_dnp(filepath: str, dnp: bool,
         uuid: Symbol UUID (alternative to reference)
     """
     return json.dumps(symbol_edit.set_symbol_dnp(filepath, dnp, reference, uuid), indent=2)
+
+
+# ── Wire & Label Edit Tools ─────────────────────────────────────────────────
+
+@mcp.tool()
+def add_wire(filepath: str, x1: float, y1: float, x2: float, y2: float) -> str:
+    """Add a wire between two points in a schematic.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        x1: Start X (mm)
+        y1: Start Y (mm)
+        x2: End X (mm)
+        y2: End Y (mm)
+    """
+    return json.dumps(wire_edit.add_wire(filepath, x1, y1, x2, y2), indent=2)
+
+
+@mcp.tool()
+def add_wire_path(filepath: str, points: list[dict]) -> str:
+    """Add a multi-segment wire path. Each segment connects consecutive points.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        points: List of {"x": float, "y": float} dicts, minimum 2 points
+    """
+    return json.dumps(wire_edit.add_wire_path(filepath, points), indent=2)
+
+
+@mcp.tool()
+def delete_wire(filepath: str, uuid: str) -> str:
+    """Delete a wire by UUID.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        uuid: UUID of the wire to delete
+    """
+    return json.dumps(wire_edit.delete_wire(filepath, uuid), indent=2)
+
+
+@mcp.tool()
+def add_junction(filepath: str, x: float, y: float) -> str:
+    """Add a junction at a point where wires cross.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        x: X position (mm)
+        y: Y position (mm)
+    """
+    return json.dumps(wire_edit.add_junction(filepath, x, y), indent=2)
+
+
+@mcp.tool()
+def delete_junction(filepath: str, uuid: str) -> str:
+    """Delete a junction by UUID.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        uuid: UUID of the junction to delete
+    """
+    return json.dumps(wire_edit.delete_junction(filepath, uuid), indent=2)
+
+
+@mcp.tool()
+def add_label(filepath: str, text: str, x: float, y: float,
+              angle: float = 0) -> str:
+    """Add a local net label at a position in the schematic.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        text: Label text (net name)
+        x: X position (mm)
+        y: Y position (mm)
+        angle: Rotation angle in degrees (default 0)
+    """
+    return json.dumps(wire_edit.add_label(filepath, text, x, y, angle), indent=2)
+
+
+@mcp.tool()
+def add_global_label(filepath: str, text: str, x: float, y: float,
+                     angle: float = 0, shape: str = "input") -> str:
+    """Add a global label at a position in the schematic.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        text: Label text (net name)
+        x: X position (mm)
+        y: Y position (mm)
+        angle: Rotation angle in degrees (default 0)
+        shape: One of "input", "output", "bidirectional", "tri_state", "passive"
+    """
+    return json.dumps(wire_edit.add_global_label(filepath, text, x, y, angle, shape), indent=2)
+
+
+@mcp.tool()
+def delete_label(filepath: str, uuid: str) -> str:
+    """Delete a label (local or global) by UUID.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        uuid: UUID of the label to delete
+    """
+    return json.dumps(wire_edit.delete_label(filepath, uuid), indent=2)
+
+
+@mcp.tool()
+def move_label(filepath: str, uuid: str, x: float = None, y: float = None,
+               angle: float = None) -> str:
+    """Move a label (local or global) to a new position.
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+        uuid: UUID of the label to move
+        x: New X position (mm)
+        y: New Y position (mm)
+        angle: New rotation angle (degrees)
+    """
+    return json.dumps(wire_edit.move_label(filepath, uuid, x, y, angle), indent=2)
 
 
 # ── Editor Tools ────────────────────────────────────────────────────────────
