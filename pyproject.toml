@@ -4,19 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kicad-mcp"
-version = "0.1.0"
-description = "MCP server for KiCad IPC API"
+version = "0.2.0"
+description = "MCP server for reading KiCad schematic and PCB files"
 requires-python = ">=3.10"
 dependencies = [
-    "pynng>=0.8.0",
-    "protobuf>=4.0",
     "mcp>=1.0",
     "kiutils>=1.4.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "grpcio-tools",
 ]
 
 [project.scripts]
