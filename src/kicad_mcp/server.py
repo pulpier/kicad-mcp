@@ -3,7 +3,7 @@
 import json
 from mcp.server.fastmcp import FastMCP
 
-from kicad_mcp.tools import schematic as sch_file, pcb as pcb_file
+from kicad_mcp.tools import schematic as sch_file, pcb as pcb_file, editor
 
 mcp = FastMCP("kicad-file")
 
@@ -140,6 +140,38 @@ def get_pcb_setup(filepath: str) -> str:
         filepath: Full path to the .kicad_pcb file
     """
     return json.dumps(pcb_file.get_pcb_setup(filepath), indent=2)
+
+
+# ── Editor Tools ────────────────────────────────────────────────────────────
+
+@mcp.tool()
+def open_schematic(filepath: str) -> str:
+    """Open a .kicad_sch file in the KiCad schematic editor (eeschema).
+
+    Args:
+        filepath: Full path to the .kicad_sch file
+    """
+    return json.dumps(editor.open_schematic(filepath), indent=2)
+
+
+@mcp.tool()
+def open_pcb(filepath: str) -> str:
+    """Open a .kicad_pcb file in the KiCad PCB editor (pcbnew).
+
+    Args:
+        filepath: Full path to the .kicad_pcb file
+    """
+    return json.dumps(editor.open_pcb(filepath), indent=2)
+
+
+@mcp.tool()
+def open_in_kicad(filepath: str) -> str:
+    """Open any KiCad file (.kicad_pro, .kicad_sch, .kicad_pcb) in the appropriate editor.
+
+    Args:
+        filepath: Full path to the KiCad file
+    """
+    return json.dumps(editor.open_in_kicad(filepath), indent=2)
 
 
 def main():
